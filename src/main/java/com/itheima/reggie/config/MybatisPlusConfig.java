@@ -13,6 +13,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MybatisPlusConfig {
 
+    /*
+    * 需求目的：分页、MybatisPlus 分页需要设置配置类
+    * 操作：添加分页拦截器，通过配置类、配置类@bean方法，返回值设置一个bean交给spring管理
+    * */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor(){
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();

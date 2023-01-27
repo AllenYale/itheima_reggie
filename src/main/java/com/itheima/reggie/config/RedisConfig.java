@@ -15,9 +15,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig extends CachingConfigurerSupport {
 
     /*
-    * 需求：自己创建redistemplate
-    * 目的：设置序列化器，序列化时，让key/value 不再“乱码”
-    * 操作：设置RedisConfig  @Configuration配置类   @bean redisTemplate方法
+    * 需求/目的：设置序列化器，序列化时，让key/value 不再“乱码”，
+    * 操作/步骤：设置RedisConfig 自己创建redistemplate @Configuration配置类   @bean redisTemplate方法
     * redis key序列化器
     * */
     @Bean

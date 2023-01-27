@@ -13,10 +13,13 @@ import com.itheima.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +39,9 @@ public class DishController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 新增菜品
@@ -127,6 +133,13 @@ public class DishController {
         log.info("修改菜品, dishDTO：{},", dishDTO.toString());
         //update 菜品，操作dish、dishflavor两张表
         dishService.updateWithFlavor(dishDTO);
+
+        //优化：清理所有菜品缓存数据
+//        Set keys = redisTemplate.keys("dish_*");
+//        redisTemplate.delete(keys);
+        //清理某个分类菜品缓存数据
+        redisTemplate.delete("dish_"+dishDTO.getCategoryId()+"_"+dishDTO.getStatus());
+
         return R.success("操作成功！！！！！！");
     }
 
@@ -135,9 +148,25 @@ public class DishController {
      * @param dish
      * @return
      */
-    //TODO 2023年1月24日09:34:36修改list控制器返回数据类型，前端需要拿到值口味数据 -> 判断显示按钮+数据展示
     @GetMapping("/list")
     public R<List<DishDTO>> list(Dish dish){
+        /*
+        * 优化：
+        * list数据先查询redis缓存，如果没有再查询db，将db中查询出来的数据放入缓存
+        * 、（dml操作时要清理或更新缓存中数据，否则数据库和缓存中数据不一致）
+        * */
+        List<DishDTO> dishDTOS = null;
+        //设置key
+        String key = "dish_"+dish.getCategoryId()+"_"+dish.getStatus();
+        //1：查询redis
+        dishDTOS = (List<DishDTO>) redisTemplate.opsForValue().get(key);
+            //缓存中有数据直接返回
+        if(dishDTOS!=null){
+            return R.success(dishDTOS);
+        }
+
+        //2: 没有数据，将db中查询出来的数据放入缓存
+
         LambdaQueryWrapper<Dish> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(dish.getCategoryId()!=null, Dish::getCategoryId, dish.getCategoryId());
         lambdaQueryWrapper.eq(Dish::getStatus, 1);
@@ -146,7 +175,7 @@ public class DishController {
 
     // 修改list控制器返回数据类型，前端需要拿到值口味数据 -> 判断显示按钮+数据展示
         //stream流操作遍历流中每个item 装配DTO返回前端
-        List<DishDTO> dishDTOS = list.stream().map(item -> {
+            dishDTOS = list.stream().map(item -> {
             DishDTO dishDTO = new DishDTO();
             BeanUtils.copyProperties(item, dishDTO);
             Long categoryId = item.getCategoryId();
@@ -163,6 +192,8 @@ public class DishController {
             return dishDTO;
 
         }).collect(Collectors.toList());
+            //将db中查询出来的数据放入缓存，设置过期时间TTL 3mins
+        redisTemplate.opsForValue().set(key, dishDTOS, 3, TimeUnit.MINUTES);
         return R.success(dishDTOS);
     }
 
