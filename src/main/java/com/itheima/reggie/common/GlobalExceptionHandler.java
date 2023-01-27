@@ -1,0 +1,47 @@
+package com.itheima.reggie.common;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+
+/**
+ *
+ * 定义全局异常处理器，aop编织入各个业务方法
+ * @ControllerAdvice(annotations = {RestController.class, Controller.class})
+ * 配合
+ *  @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class})
+ *使用
+ *
+ * @ Author: Hanyuye
+ * @ Date: 2023/1/17 21:52
+ */
+@Slf4j
+/*
+* @ControllerAdvice比较熟知的用法是结合@ExceptionHandler用于全局异常的处理
+* */
+@ControllerAdvice(annotations = {RestController.class, Controller.class})
+@ResponseBody
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class})
+    public R<String> sqlIntegrityConstraintViolationExceptionHandler(SQLIntegrityConstraintViolationException ex){
+        log.error(ex.getMessage());
+        if(ex.getMessage().contains("Duplicate entry")){
+            String[] split = ex.getMessage().split(" ");
+            String msg = split[2] + "already exist！";
+            return R.error(msg);
+        }
+        return R.error("unknow error occurred..."+ex.getMessage());
+    }
+
+    @ExceptionHandler(value = {CustomException.class})
+    public R<String> sqlIntegrityConstraintViolationExceptionHandler(CustomException ex){
+        log.error(ex.getMessage());
+        return R.error(ex.getMessage());
+    }
+}
