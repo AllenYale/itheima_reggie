@@ -12,6 +12,8 @@ import com.itheima.reggie.service.SetMealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +40,10 @@ public class SetMealController {
     private CategoryService categoryService;
 
     @PostMapping
+    /*
+    * 新增套餐时，清理缓存（某一个分类下缓存数据全部删除, allEntries = true）
+    * */
+    @CacheEvict(value = "setmealCache", allEntries = true)
     public R<String> save(@RequestBody SetmealDto setmealDto){
         log.info("添加套餐。{}", setmealDto.toString());
         setMealService.saveWithDish(setmealDto);
@@ -86,14 +92,19 @@ public class SetMealController {
     // 字符串逗号分开的get请求传值（http://localhost:8080/setmeal?ids=1616948151799898113,1415580119015145474）
     // controller参数自动接收 加上@RequestParam  封装为list 或者 数组
 
+
     @DeleteMapping
+    /*优化：
+    * 删除套餐时候，清理缓存（某一个分类下缓存数据全部删除, allEntries = true）
+    * */
+    @CacheEvict(value = "setmealCache", allEntries = true)
     public R<String> delete(@RequestParam List<Long> ids){
         log.info("ids: {}", ids);
         setMealService.removeWithDish(ids);
         return R.success("套餐删除成功。。。");
     }
 
-    //TODO：2023年1月22日09:12:09  套餐管理：停售修改编辑 etc 大年初一，初级目标：P80-P88 必须完成 √。  挑战目标： -P103所有业务开发finish
+    //TODO：2023年1月22日09:12:09  套餐管理：停售修改编辑 etc
 
     /**
      * categoryId 菜品分类id（套餐分类）
@@ -103,6 +114,9 @@ public class SetMealController {
      * @return
      */
     @GetMapping("/list")
+    /*优化：
+    查询时如果缓存中有数据则用缓存，没有数据就加入缓存；#setmeal SPEL表达式可以获取到形参*/
+    @Cacheable(value = "setmealCache", key = "#setmeal.categoryId + '_' + #setmeal.status")
     public R<List<Setmeal>> list(/*String categoryId, Integer status*/Setmeal setmeal){
         //查询套餐
         //SQL: select * from setmeal where categoryId = ? and status = ?
