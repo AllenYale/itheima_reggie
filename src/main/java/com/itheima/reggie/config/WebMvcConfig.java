@@ -15,6 +15,7 @@ import java.util.List;
  * @ Date: 2023/1/17 14:36
  */
 @Slf4j
+/*配置类*/
 @Configuration
 /*
 WebMvcConfigurationSupport是webmvc的配置类，如果在springboot项目中，有配置类继承了WebMvcConfigurationSupport，
@@ -22,7 +23,13 @@ WebMvcConfigurationSupport是webmvc的配置类，如果在springboot项目中�
 使用WebMvcConfigurationSupport配置webmvc的一些方法：
  */
 public class WebMvcConfig extends WebMvcConfigurationSupport {
+    /*
+    * 在 Spring Boot 中，静态资源应该放置在项目的 classpath 下。由于 Spring Boot 默认的 classpath 为 src/main/resources 文件夹，因此通常建议将静态资源文件放置在这个文件夹下。而在 src/main/resources 文件夹下，可以根据实际情况创建 static、templates、public 等文件夹，分别用于存放不同类型的静态资源。
+具体来说，在 Spring Boot 项目中，静态资源会在启动时被加载到内存中，并通过 ResourceHttpRequestHandler 来处理静态资源的请求。其中，静态资源的访问路径取决于它们在 classpath 下的相对位置，例如：
+    * */
     /**
+     * 默认springboot 静态资源放在static or templates文件夹下，也可以自己写配置类自定义
+     * MVC框架
      * 设置静态资源映射
      * @param registry
      */
@@ -30,6 +37,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         log.info("开始静态资源映射=======================");
         //classpath：/dirName/后斜杠不能少
+        //添加资源处理器（处理某些请求地址）   添加资源定位地址（将请求地址指向哪里）
         registry.addResourceHandler("/backend/**").addResourceLocations("classpath:/backend/");
         registry.addResourceHandler("/front/**").addResourceLocations("classpath:/front/");
     }

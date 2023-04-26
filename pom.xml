@@ -83,12 +83,36 @@
             <version>1.18.20</version>
         </dependency>
 
+        <!--
+        com.alibaba.fastjson 是阿里巴巴开源的一个 JSON 库，用于将 Java 对象转换为 JSON 格式的字符串，或将 JSON 格式的字符串转换为 Java 对象。
+
+fastjson 的主要特点包括：
+
+速度快：fastjson 相比其他 JSON 库，有更快的序列化和反序列化速度。
+内存占用小：fastjson 在序列化和反序列化时，占用更少的内存。
+使用方便：fastjson 支持操作简单易用，提供了丰富的 API。
+在使用 fastjson 进行 JSON 格式数据的序列化和反序列化时，用户只需要通过调用 fastjson 中的一些 API 即可完成，而不需要手动解析 JSON 数据。
+        -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.76</version>
         </dependency>
 
+        <!--
+        commons-lang 是 Apache 组织提供的一个 Java 语言工具库，旨在为 Java 开发人员提供一组实用的工具类和方法，以简化常见的编程任务。
+
+commons-lang 这个 pom 包是用于管理 commons-lang 工具库的依赖关系的，它提供了访问 commons-lang 工具库的所有程序包和类的依赖项，使得开发人员可以方便地在自己的项目中使用这些工具和方法。
+
+commons-lang 工具库提供的功能包括：
+
+字符串处理：包括字符串截取、替换、格式化、分割等常用操作。
+类型转换：包括数字类型、日期类型、数组类型、集合类型等之间的相互转换。
+随机数生成：可以生成随机数、随机字符串、随机颜色等。
+常用工具类：包括日期时间处理、文件处理、命令行参数解析、反射操作、加密解密等。
+等等。
+借助 commons-lang 工具库，Java 开发人员可以更加高效地编写代码，减少重复性代码的编写，提高代码的可读性和健壮性。同时，使用 pom 包可以方便地管理 commons-lang 工具库的版本和依赖关系，省去了手动下载和配置的步骤，减少了开发人员的工作量。
+-->
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -100,7 +124,35 @@
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
+<!--
+数据库连接池是用于管理数据库连接的一种技术方案，通过对多个数据库连接的维护和管理，减少了应用程序获取和释放数据库连接时产生的性能开销，提高了应用程序的性能和可扩展性。
 
+数据库连接池的工作原理主要包括以下几个步骤：
+
+初始化：初始化连接池时会创建一定数量的数据库连接。这些连接可以是预先创建好的空闲连接，也可以在需要时动态创建。
+
+连接分配：当有应用程序请求连接时，连接池从连接池中取出一个空闲连接并分配给应用程序使用。如果没有空闲连接，则等待或根据配置情况创建一个新的连接。
+
+连接使用：应用程序使用连接进行数据库操作，并在操作结束后将连接还回连接池。应用程序不需要知道连接是如何管理的，它只需要向连接池请求连接即可。
+
+连接释放：连接池将连接标识为空闲状态，并放回连接池中以供下一次使用。如果连接数超过了连接池的最大容量，则释放最早的连接，以保证连接池的容量恒定。
+
+连接监控：连接池会定期监控连接的可用性和健康状况，并对连接进行回收和重新创建。
+
+使用数据库连接池的好处在于可以减少数据库连接的创建和销毁次数，从而减少对数据库的压力，提高应用程序的性能。同时，连接池还可以对连接进行统一管理，保证了连接的健康性和可用性，降低了数据库访问的风险，提高应用程序的可靠性。
+-->
+
+        <!--
+        ruid 是一个非常优秀的连接池，已经被广泛应用于各种类型的项目中。不过，根据具体的需求和使用场景，可能会存在更适合某些场景的连接池。
+
+以下是一些比 Druid 更好的连接池的推荐：
+
+HikariCP：HikariCP 是一个快速、可靠、高性能的 JDBC 连接池。相对于 Druid 和其他连接池，它拥有更快的启动速度、更低的资源消耗以及更好的自我恢复能力。HikariCP 同时提供了丰富的配置参数，方便进行优化和定制。
+
+c3p0：c3p0 是一个老牌的连接池，也是许多项目的首选。它可以通过灵活的配置来管理连接数、超时时间等参数。同时，c3p0 也提供了各种失败重试和心跳机制，可以在连接故障时自动回收资源。
+
+Tomcat JDBC Pool：Tomcat JDBC Pool 是 Apache 开发的一个高性能连接池，具有灵活的参数配置和完善的监控工具。它采用了先进的连接池算法，可以自动管理连接数量，并且在连接故障时自动处理故障情况。
+        -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
@@ -114,6 +166,13 @@
 
     </dependencies>
 
+    <!--
+    对于 Spring Boot 应用，建议使用 spring-boot-maven-plugin 来进行打包和部署。该插件可以方便地将应用打包为可执行的 JAR 或 WAR 包，并集成了许多方便的功能（例如嵌入式 Tomcat 或 Jetty、自动重启和热部署、内置监控管理等），使得开发和部署变得更加方便。
+
+而在一些传统的 Java Web 应用中，使用 Maven 的 maven-jar-plugin 和 maven-war-plugin 也可以将应用打包为可执行的 JAR 或 WAR 包。这种方式需要手动配置 Servlet 容器（例如 Tomcat），并且通常需要将 WAR 包部署到容器中才能运行。
+
+所以，我们需要根据具体情况来选择使用哪种方式。如果是开发 Spring Boot 应用，建议使用 spring-boot-maven-plugin；如果是开发传统的 Java Web 应用，则可以使用 maven-jar-plugin 和 maven-war-plugin。
+    -->
     <build>
         <plugins>
             <plugin>

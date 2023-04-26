@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDateTime;
 
+//log.info() 通过@Slf4j该注解输出日志。
 @Slf4j
 @SpringBootApplication
 
@@ -23,7 +24,7 @@ public class ItheimaReggieApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ItheimaReggieApplication.class, args);
-        log.info("项目启动成功==========");
+        log.info("log.info==============项目启动成功==========");
 //        System.out.println(LocalDateTime.now());
 
     }
