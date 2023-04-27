@@ -18,11 +18,16 @@ import java.util.List;
 /*配置类*/
 @Configuration
 /*
+在 Spring MVC 中，我们可以通过继承 WebMvcConfigurationSupport 来自定义配置类，并在其中添加自己的拦截器、视图解析器、消息转换器等组件。实际上，Spring Boot 也是基于 Spring MVC 构建的，因此同样可以使用 WebMvcConfigurationSupport 类来进行定制化配置。
+
+在一个 Spring Boot 项目中，如果需要自定义 Spring MVC 的配置，可以创建一个继承 WebMvcConfigurationSupport 的配置类，并通过 @Configuration 注解将其注入到 Spring 容器中，如下所示：
+ */
+/*
 WebMvcConfigurationSupport是webmvc的配置类，如果在springboot项目中，有配置类继承了WebMvcConfigurationSupport，
 那么webmvc的自动配置类WebMvcAutoConfiguration就会失效。
 使用WebMvcConfigurationSupport配置webmvc的一些方法：
  */
-public class WebMvcConfig extends WebMvcConfigurationSupport {
+public class MyWebMvcConfig extends WebMvcConfigurationSupport{
     /*
     * 在 Spring Boot 中，静态资源应该放置在项目的 classpath 下。由于 Spring Boot 默认的 classpath 为 src/main/resources 文件夹，因此通常建议将静态资源文件放置在这个文件夹下。而在 src/main/resources 文件夹下，可以根据实际情况创建 static、templates、public 等文件夹，分别用于存放不同类型的静态资源。
 具体来说，在 Spring Boot 项目中，静态资源会在启动时被加载到内存中，并通过 ResourceHttpRequestHandler 来处理静态资源的请求。其中，静态资源的访问路径取决于它们在 classpath 下的相对位置，例如：

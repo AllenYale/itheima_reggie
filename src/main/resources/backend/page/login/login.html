@@ -99,9 +99,15 @@
           this.$refs.loginForm.validate(async (valid) => {
             if (valid) {
               this.loading = true
+              // 登入方法，在js中请求/employee/login'
               let res = await loginApi(this.loginForm)
+              //前端和后端约定好，1表示登入成功，服务端相应的res 含有 code、data、msg
               if (String(res.code) === '1') {
+                //将userinfo 放入
+                //从服务器的角度来看，LocalStorage 存储的数据对其并没有太大的用处，因为这些数据存储在客户端本地，并不会被发送到服务器端，因此服务器无法直接访问这些数据。
+                // 但是，LocalStorage 存储的数据可以在客户端和服务器之间进行传递和共享，通过将数据存储在 LocalStorage 中，可以使得客户端能够方便地获取到特定的数据并在不同的页面之间进行共享。
                 localStorage.setItem('userInfo',JSON.stringify(res.data))
+                //跳转，渲染页面.跳转和直接访问是不同的概念。在 JavaScript 中，通过 window.location.href 或 window.open 等方法可以实现页面跳转，打开新的 URL 地址，但这个过程实际上是浏览器重新加载并渲染了一个新的页面，而不是直接在当前页面中访问其他域名下的资源。
                 window.location.href= '/backend/index.html'
               } else {
                 this.$message.error(res.msg)
