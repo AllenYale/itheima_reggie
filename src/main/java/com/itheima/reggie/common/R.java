@@ -6,9 +6,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-/*pojobean 需要实现序列化接口才能缓存*/
+/*通用返回结果类；服务端相应的数据都会封装成此对象。*/
 @Data
-public class R<T> implements Serializable {
+/*泛型，增强通用性*/
+public class R<T> implements Serializable {/*pojo bean 需要实现序列化接口才能缓存*/
 
     private Integer code; //编码：1成功，0和其它数字为失败
 
@@ -16,7 +17,7 @@ public class R<T> implements Serializable {
 
     private T data; //数据
 
-    private Map map = new HashMap(); //动态数据
+    private Map map = new HashMap(); //动态数据，用到再说。
 
     public static <T> R<T> success(T object) {
         R<T> r = new R<T>();

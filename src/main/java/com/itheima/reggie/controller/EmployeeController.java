@@ -37,12 +37,15 @@ public class EmployeeController {
     public R<Employee> login(@RequestBody Employee employee, HttpServletRequest httpServletRequest){
         //1. pwd密码md5加密处理
         String password = employee.getPassword();
+        /*DigestUtils 是 Apache Commons Codec 中提供的一个工具类，用于实现各种哈希算法和消息摘要算法，包括 MD5、SHA-1、SHA-256 等常见的算法。它是通过对 Java 标准库中的 MessageDigest 类进行封装和简化，提供了更加易用和方便的接口。*/
         password = DigestUtils.md5DigestAsHex(password.getBytes());
 
         //2. username查询db
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        //？？？2023年1月17日16:21:35方法引用
+        //TODO: 2023年4月28日00:03:17 还是没理解方法引用，重新看一遍新特性。
+        // ？？？2023年1月17日16:21:35方法引用 还是没理解方法引用，重新看一遍新特性。
         lambdaQueryWrapper.eq(Employee::getUsername, employee.getUsername());
+        //username 在数据库中，已经设计成unique index唯一索引
         Employee emp = employeeService.getOne(lambdaQueryWrapper);
 
         //3. 如果没有查询到返回登入失败
