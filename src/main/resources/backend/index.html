@@ -36,6 +36,7 @@
           </div>
 
           <el-scrollbar wrap-class="scrollbar-wrapper">
+            <!--element-ui 专门展示菜单的组件-->
             <el-menu
               :default-active="defAct"
               :unique-opened="false"
@@ -112,6 +113,10 @@
 
       new Vue({
         el: '#app',
+        /*数据准备
+        * 定义了数据不一定会展示，
+        * 需要用到element-ui的标签才能配合将数据展示出来
+        * */
         data() {
           return {
             defAct: '2',
@@ -163,6 +168,7 @@
           }
         },
         computed: {},
+        //钩子函数，页面加载默认调用。
         created() {
           const userInfo = window.localStorage.getItem('userInfo')
           if (userInfo) {
@@ -182,6 +188,7 @@
             logoutApi().then((res)=>{
               if(res.code === 1){
                 localStorage.removeItem('userInfo')
+                //前端跳转页面
                 window.location.href = '/backend/page/login/login.html'
               }
             })

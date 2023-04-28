@@ -48,19 +48,20 @@ public class EmployeeController {
         //username 在数据库中，已经设计成unique index唯一索引
         Employee emp = employeeService.getOne(lambdaQueryWrapper);
 
+        //登入失败，需要判断所有分支
         //3. 如果没有查询到返回登入失败
         if(emp == null){
-            return R.error("登入失败");
+            return R.error("no such user 登入失败");
         }
 
         //4. 密码对比，如果不一致返回登入失败
         if(!emp.getPassword().equals(password)){
-            return R.error("登入失败");
+            return R.error("password is error 登入失败");
         }
 
         //5. 查看emp status
         if(emp.getStatus() == 0){
-            return R.error("status is invaild");
+            return R.error("status is invalid");
         }
 
         //6. 登入成功，将员工id放入session
@@ -76,7 +77,9 @@ public class EmployeeController {
      */
     @PostMapping("/logout")
     public R<String> logout(HttpServletRequest httpServletRequest){
-        httpServletRequest.removeAttribute("employee");
+        //退出登入，从session中移除employee
+        httpServletRequest.getSession().removeAttribute("employee");
+//        httpServletRequest.removeAttribute("employee");
         return R.success("退出成功");
     }
 
