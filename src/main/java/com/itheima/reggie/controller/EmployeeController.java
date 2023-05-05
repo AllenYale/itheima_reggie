@@ -89,7 +89,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping
-    public R<String> save(@RequestBody Employee employee, HttpServletRequest request){
+    public R<String> save(@RequestBody/*@RequestBody接收前端表单传过来的json格式对象数据*/ Employee employee, HttpServletRequest request){
         log.info("新增员工，员工信息{} ", employee.toString());
 
         //init密码123456 md5加密
@@ -100,6 +100,8 @@ public class EmployeeController {
 //        Long id = (Long) request.getSession().getAttribute("employee");
 //        employee.setUpdateUser(id);
 //        employee.setCreateUser(id);
+
+        //如果dml操作失误需要try catch，catch中return R.error（code） 返回前端错误码；或者使用全局异常处理器GlobalExceptionHandle基于aop
 
         employeeService.save(employee);
         log.info("save controller========== 当前线程id：{}, name: {}", Thread.currentThread().getId(), Thread.currentThread().getName());

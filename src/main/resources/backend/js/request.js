@@ -8,6 +8,7 @@
     timeout: 100000
   })
   // request拦截器
+  /*前端统一请求拦截器，                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        */
   service.interceptors.request.use(config => {
     // 是否需要设置 token
     // const isToken = (config.headers || {}).isToken === false

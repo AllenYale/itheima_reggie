@@ -125,6 +125,7 @@
           }
         },
         computed: {},
+        //vue内置对象生命周期函数，钩子函数。vue对象创建完之后自动执行。
         created() {
           this.init()
           this.user = JSON.parse(localStorage.getItem('userInfo')).username
@@ -132,6 +133,7 @@
         mounted() {
         },
         methods: {
+          //vue内置对象生命周期函数，钩子函数。vue对象创建完之后自动执行。
           async init () {
             const params = {
               page: this.page,
@@ -140,6 +142,7 @@
             }
             await getMemberList(params).then(res => {
               if (String(res.code) === '1') {
+                //渲染分页数据，table记录&单页总共条数counts
                 this.tableData = res.data.records || []
                 this.counts = res.data.total
               }

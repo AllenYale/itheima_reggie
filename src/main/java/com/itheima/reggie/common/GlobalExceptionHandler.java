@@ -23,13 +23,15 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @Slf4j
 /*
 * @ControllerAdvice比较熟知的用法是结合@ExceptionHandler用于全局异常的处理
+* 使用全局异常处理器GlobalExceptionHandle基于aop，抛异常了这里统一处理
 * */
+//通知、拦截那些controller
 @ControllerAdvice(annotations = {RestController.class, Controller.class})
 @ResponseBody
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class})
-    public R<String> sqlIntegrityConstraintViolationExceptionHandler(SQLIntegrityConstraintViolationException ex){
+    public R<String> sqlIntegrityConstraintViolationExceptionHandler(/*只需声明参数，框架会自动注入对象*/SQLIntegrityConstraintViolationException ex){
         log.error(ex.getMessage());
         if(ex.getMessage().contains("Duplicate entry")){
             String[] split = ex.getMessage().split(" ");

@@ -25,10 +25,10 @@ public class ItheimaReggieApplication {
     public static void main(String[] args) {
         SpringApplication.run(ItheimaReggieApplication.class, args);
         log.info("log.info==============项目启动成功==========");
-//        System.out.println(LocalDateTime.now());
+        //测试LocalDateTime
+//        System.out.println(LocalDateTime.now());//2023-05-05T23:22:06.407
+
 
     }
-    //TODO：2023年4月26日08:26:37 登入功能完成 P18； mac 配置 本地可以项目run；配置云redis？
-    // https://www.bilibili.com/video/BV13a411q753?p=6&spm_id_from=pageDriver&vd_source=b6b5278300a836e624628f2d216bb728
 
 }
