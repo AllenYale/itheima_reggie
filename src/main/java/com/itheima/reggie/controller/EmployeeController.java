@@ -117,6 +117,7 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/page")
+    //分页查询逻辑：用MP框架实现，具体使用到Page对象，需要明确查询页，页面大小。明确查询条件。
     public R<Page> page(int page, int pageSize, String name){
         log.info("page = {}, pageSize = {}, name = {}", page, pageSize, name);
         //分页构造器
@@ -124,9 +125,13 @@ public class EmployeeController {
 
         //条件构造器
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.like(StringUtils.isNotBlank(name), Employee::getUsername, name);
-        lambdaQueryWrapper.orderByDesc(Employee::getCreateTime);
+            //当查询条件！=空的时候才添加
+        lambdaQueryWrapper.like(StringUtils.isNotBlank(name), employee -> {
+            return employee.getUsername();
+        }, name);
+        lambdaQueryWrapper.orderByDesc(employee -> employee.getCreateTime());
 
+        //处理引用pageInfo，MP直接处理好后返回
         employeeService.pageMaps(pageInfo, lambdaQueryWrapper);
 
         return R.success(pageInfo);
