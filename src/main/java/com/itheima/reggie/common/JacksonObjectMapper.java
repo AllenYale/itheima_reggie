@@ -17,6 +17,19 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
+/*
+2023年5月9日08:43:18
+* 由于服务端向客户端响应数据时
+* 会调用Spring mvc 的消息转换器
+* 需要在配置类中扩展消息转换器
+*   消息转换器对java对象转json统一处理，
+*   消息转换器会调用另一个对象--对象转换器JacksonObjectMapper（底层使用jackson、进行java对象到json转换）
+*
+*
+ */
+/*jackson包
+* 提供对象转换器JacksonObjectMapper
+* */
 /**
  * 对象映射器:基于jackson将Java对象转为json，或者将json转为Java对象
  * 将JSON解析为Java对象的过程称为 [从JSON反序列化Java对象]
@@ -43,6 +56,8 @@ public class JacksonObjectMapper extends ObjectMapper {
                 .addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)))
 
                 .addSerializer(BigInteger.class, ToStringSerializer.instance)
+                /*将long型数据、转化成string*/
+                //通过Jackson包处理成 String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss"； 否则前端接收到的是数组
                 .addSerializer(Long.class, ToStringSerializer.instance)
                 .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)))
                 .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)))

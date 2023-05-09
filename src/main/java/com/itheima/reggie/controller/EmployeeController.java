@@ -149,6 +149,7 @@ public class EmployeeController {
         //填充字段，完善数据库更新
         Long id = (Long) request.getSession().getAttribute("employee");
         employee.setUpdateUser(id);
+        //通过Jackson包处理成 String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss"； 否则前端接收到的是数组
         employee.setUpdateTime(LocalDateTime.now());
 
         boolean b = employeeService.updateById(employee);

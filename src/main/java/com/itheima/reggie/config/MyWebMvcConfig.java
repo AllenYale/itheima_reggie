@@ -49,6 +49,8 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport{
 
     /**
      * 扩展mvc消息转换器，（扩展目的：避免long型传到前端、js丢失精度；转换为string，）
+     * 如果不扩展，会使用mvc默认的消息转换器，无法将对象自定义转换成相应格式的json
+     *
      * @param converters the list of configured converters to extend
      */
     @Override
@@ -57,7 +59,12 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport{
 
         //创建消息转换器对象：作用将controller返回对象转换为json
         MappingJackson2HttpMessageConverter httpMessageConverter = new MappingJackson2HttpMessageConverter();
-        //将对象转换器设置到消息转换器，（底层使用Jackson 将java对象转换为json）
+
+/**
+ * 对象映射器:基于jackson将Java对象转为json，或者将json转为Java对象
+ * 将JSON解析为Java对象的过程称为 [从JSON反序列化Java对象]
+ * 从Java对象生成JSON的过程称为 [序列化Java对象到JSON]
+ */
         httpMessageConverter.setObjectMapper(new JacksonObjectMapper());
 
         //追加到mvc框架的转换器中，并设置优先使用
