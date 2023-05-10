@@ -54,6 +54,7 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport{
      * @param converters the list of configured converters to extend
      */
     @Override
+    /*在mvc配置类中，该方法项目启动就会调用，参数converters是mvc默认的8个转换器，可以将自定的转换器加入并分配index*/
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         log.info("扩展消息转换器==============");
 
