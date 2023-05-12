@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  */
 /*元数据对象处理器
 * entity公共字段自动填充
-* 在这个类不能获得httpsession对象
+* 在这个类不能获得httpsession对象，所以使用过滤器中放到ThreadLocal中的session对象userID
 * */
 @Component
 @Slf4j
