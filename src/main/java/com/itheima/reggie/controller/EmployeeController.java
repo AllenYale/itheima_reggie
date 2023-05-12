@@ -125,11 +125,11 @@ public class EmployeeController {
 
         //条件构造器
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            //当查询条件！=空的时候才添加
-        lambdaQueryWrapper.like(StringUtils.isNotBlank(name), employee -> {
-            return employee.getUsername();
-        }, name);
-        lambdaQueryWrapper.orderByDesc(employee -> employee.getCreateTime());
+        //只能用方法引用，不然会报错：org.apache.ibatis.reflection.ReflectionException: Error parsing property name 'lambda$page$73970c95$2'.  Didn't start with 'is', 'get' or 'set'.
+        /*这个错误信息来自于 MyBatis，它提示在解析一个属性名时出现了问题。具体来说，MyBatis 需要将属性名称转换为对应的 getter 或 setter 方法名称，以便进行数据库操作。然而，出错的属性名 'lambda$page$73970c95$2' 并没有以 'is'、'get' 或 'set' 开头，因此 MyBatis 解析失败。
+从错误信息来看，可能是因为在 Mapper 中使用了 Lambda 表达式获取分页数据，而 MyBatis 在解析 Lambda 表达式时出现了问题*/
+        lambdaQueryWrapper.like(StringUtils.isNotBlank(name), Employee::getUsername, name);
+        lambdaQueryWrapper.orderByDesc(Employee::getCreateTime);
 
         //处理引用pageInfo，MP直接处理好后返回
         employeeService.pageMaps(pageInfo, lambdaQueryWrapper);
