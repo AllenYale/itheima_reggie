@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
             String msg = split[2] + "already exist！";
             return R.error(msg);
         }
-        return R.error("unknow error occurred..."+ex.getMessage());
+        return R.error("unknown error occurred..."+ex.getMessage());
     }
 
     @ExceptionHandler(value = {CustomException.class})

@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
  * @ Author: Hanyuye
  * @ Date: 2023/1/18 11:03
  */
+/*元数据对象处理器
+* entity公共字段自动填充
+* */
 @Component
 @Slf4j
 public class MyMetaObjectHandler implements MetaObjectHandler {
@@ -36,7 +39,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
      * @param metaObject 元对象
      */
     @Override
-    public void updateFill(MetaObject metaObject) {
+    public void updateFill(MetaObject metaObject/*metaObj中有前端传过来的原始 表单/请求 对象*/) {
         log.info("公共字段自动填充[update]...");
         log.info("公共字段自动填充[update]========== 当前线程id：{}, name: {}", Thread.currentThread().getId(), Thread.currentThread().getName());
         log.info(metaObject.toString());
