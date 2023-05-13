@@ -40,4 +40,4 @@ mybatis-plus:
 reggie:
   file:
 # basepath 需要用\隔开目录，该字符串后面要继续拼接字符串
-    basePath: f:\testDir\
+    basePath: F:\workspace_idea\itheima_reggie\upload_file_Dir

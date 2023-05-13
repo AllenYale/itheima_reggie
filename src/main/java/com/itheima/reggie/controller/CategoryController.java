@@ -23,7 +23,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * 新增分类/菜单信息
+     * 新增分类/菜单信息，通过前端传过来type辨别是新增分类还是菜单
      * @param category
      * @return
      */
@@ -42,7 +42,9 @@ public class CategoryController {
      */
     @GetMapping("/page")
     public R<Page> page(Integer page, Integer pageSize){
+        //基于MybatisPlus API 创建分页查询对象 page对象。
         Page<Category> pageInfo = new Page<>(page, pageSize);
+        //MP 条件构造器，添加排序条件
         LambdaQueryWrapper<Category> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.orderByAsc(Category::getSort);
         categoryService.page(pageInfo, lambdaQueryWrapper);

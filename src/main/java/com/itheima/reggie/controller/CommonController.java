@@ -35,26 +35,31 @@ public class CommonController {
      * @return
      */
     @PostMapping("/upload")
-    public R<String> upload(MultipartFile file) {
-        log.info("Commoncontroller， multipartfile 文件上传中：：：{}", file.toString());
+    public R<String> upload(MultipartFile file/*spring框架封装的类，在spring-web jar包中，参数名和前端上传文件name必须一致*/) {
+        log.info("Common Controller， multipart file 文件上传中：：：{}", file.toString());
 
-//        String name = file.getName(); //形参名字
-        //获得原始文件名
+        //file API获得 获得原始文件名
         String originalFilename = file.getOriginalFilename();
+        String originalFileNamePrefix = originalFilename.substring(0, originalFilename.lastIndexOf('.'));
+        //获取后缀比如 .jpg .png
         String suffix = originalFilename.substring(originalFilename.lastIndexOf('.'));
+        //生成随机30多位uuid：5aece8fb-54a9-484e-9389-44b35d869c1e
         UUID randomUUID = UUID.randomUUID();
-        String newFileName = randomUUID + suffix;
+        String newFileName = randomUUID + originalFileNamePrefix + suffix;
 
+        //判断basePath是否存在。不存在就创建一个目录用于转发文件transferTo
         File dir = new File(fileBasePath);
         if (!dir.exists()) {
             dir.mkdir();
         }
 
         try {
-            file.transferTo(new File(fileBasePath + newFileName));
+            //调用Spring框架API转存文件： MultipartFile transferTo方法，将文件转存到某个地方File dest
+            file.transferTo(new File(fileBasePath +  newFileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        //返回页面文件名，新增菜品需要把文件名保存到表中。（文件路径在项目配置文件配置：file\basePath）；也可以直接在DB中存文件地址，读取时直接读相应地址文件
         return R.success(newFileName);
     }
 
@@ -65,11 +70,12 @@ public class CommonController {
      * @param httpServletResponse
      */
     @GetMapping("/download")
-    public void download(String name, HttpServletResponse httpServletResponse) {
+    public void download(String name/*文件名称*/, HttpServletResponse httpServletResponse/*获得输出流，二进制响应  */) {
 
         try (FileInputStream fileInputStream = new FileInputStream(fileBasePath + name);
              ServletOutputStream outputStream = httpServletResponse.getOutputStream();) {
 
+            //设置响应回去的文件类型
             httpServletResponse.setContentType("image/jpeg");
 
             int len = 0;

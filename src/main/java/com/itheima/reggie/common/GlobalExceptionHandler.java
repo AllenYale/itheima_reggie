@@ -41,6 +41,7 @@ public class GlobalExceptionHandler {
         return R.error("unknown error occurred..."+ex.getMessage());
     }
 
+    //全局异常处理器，处理自定义异常
     @ExceptionHandler(value = {CustomException.class})
     public R<String> sqlIntegrityConstraintViolationExceptionHandler(CustomException ex){
         log.error(ex.getMessage());

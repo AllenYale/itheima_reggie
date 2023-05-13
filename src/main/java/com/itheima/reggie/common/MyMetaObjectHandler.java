@@ -11,7 +11,11 @@ import java.time.LocalDateTime;
  * @ Author: Hanyuye
  * @ Date: 2023/1/18 11:03
  */
-/*元数据对象处理器
+/*
+在数据库中插入数据或者更新数据时，往往伴随的时间的更新，此时又不想用数据库给定的时间，
+那么我们就可以使用mybatis-plus中的MetaObjectHandler接口 来实现时间更新的目的
+
+元数据对象处理器
 * entity公共字段自动填充
 * 在这个类不能获得httpsession对象，所以使用过滤器中放到ThreadLocal中的session对象userID
 * */
