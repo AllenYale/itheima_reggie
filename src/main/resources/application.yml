@@ -12,7 +12,7 @@ spring:
       username: root
 #      (Windows环境)
       password: root
-#      (mac环境)ff
+#      (mac环境)
 #      password: yehanyu123
 
 #      本机linux虚拟机redis
@@ -28,7 +28,7 @@ spring:
 
 mybatis-plus:
   configuration:
-    #在映射 实体 or 属性时，将数据库中 表名 or 字段名 中的下划线去掉，按照驼峰命名法映射
+    #在映射 实体 or 属性时，将数据库中 表名 or 字段名 中的show下划线去掉，按照驼峰命名法映射
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
@@ -39,5 +39,5 @@ mybatis-plus:
 
 reggie:
   file:
-# basepath 需要用\隔开目录，该字符串后面要继续拼接字符串
-    basePath: F:\workspace_idea\itheima_reggie\upload_file_Dir
+# basepath yml中配置文件上传basePath，最后需要加上\斜杠。因为代码中会在后面拼接文件名使用。
+    basePath: F:\workspace_idea\itheima_reggie\upload_file_Dir\
