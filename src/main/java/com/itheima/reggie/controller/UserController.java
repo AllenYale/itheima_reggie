@@ -67,7 +67,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public R<User> login(@RequestBody Map map, HttpSession httpSession){//RequestBody Map 类型参数可以接受前端零散json数据（不必用dto封装）
+    public R<User> login(@RequestBody Map map/*RequestBody Map 类型参数可以接受前端零散json数据，code+phone（不必用dto封装）*/, HttpSession httpSession){
         //接收移动端传递参数：手机号+验证码
         log.info("map, {}", map);
 

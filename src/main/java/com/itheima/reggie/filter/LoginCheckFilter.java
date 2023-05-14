@@ -50,7 +50,7 @@ public class LoginCheckFilter implements Filter {
         }
 
         //【判断后台管理端】，需要拦截的uri，判断是否登入，登入则放行。没有则返回未登入
-        //TODO 2023年1月24日17:47:06 同一个session下，user 移动端登入之后管理台刷新也是登入。需要加url判断
+        //TODO 2023年1月24日17:47:06 同一个session下，user 移动端登入之后管理台刷新也是登入。感觉不冲突：不会有user和employee这样操作。
         if(httpServletRequest.getSession().getAttribute("employee")!=null){
             log.info("============用户已经登入，用户id为：{}：", httpServletRequest.getSession().getAttribute("employee"));
 
