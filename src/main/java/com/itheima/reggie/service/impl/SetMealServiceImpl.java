@@ -9,6 +9,7 @@ import com.itheima.reggie.entity.SetmealDish;
 import com.itheima.reggie.mapper.SetMealMapper;
 import com.itheima.reggie.service.SetMealDishService;
 import com.itheima.reggie.service.SetMealService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +52,7 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, Setmeal> impl
         if(count>0){
             throw new CustomException("有套餐正在售卖中，无法删除。。。");
         }
-
+//        套餐删除要删除套餐表，套餐菜品表。
         //remove setmeal
         this.removeByIds(ids);
 
@@ -60,4 +61,41 @@ public class SetMealServiceImpl extends ServiceImpl<SetMealMapper, Setmeal> impl
         lambdaQueryWrapper.in(SetmealDish::getSetmealId, ids);
         setMealDishService.remove(lambdaQueryWrapper);
     }
+
+    @Override
+    public SetmealDto getByIdWithDish(Long id) {
+        //查询套餐基本信息
+        Setmeal setmeal = this.getById(id);
+        SetmealDto setmealDto = new SetmealDto();
+        BeanUtils.copyProperties(setmeal, setmealDto);
+
+        //查询套餐菜品信息
+        LambdaQueryWrapper<SetmealDish> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(SetmealDish::getSetmealId,setmeal.getId());
+        List<SetmealDish> list = setMealDishService.list(queryWrapper);
+
+        setmealDto.setSetmealDishes(list);
+        return setmealDto;
+    }
+    @Override
+    public void updateWithDish(SetmealDto setmealDto) {
+        //更新setmeal表基本信息
+        this.updateById(setmealDto);
+
+        //更新setmeal_dish表信息delete操作
+        LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SetmealDish::getSetmealId, setmealDto.getId());
+        setMealDishService.remove(queryWrapper);
+
+        //更新setmeal_dish表信息insert操作
+        List<SetmealDish> SetmealDishes = setmealDto.getSetmealDishes();
+
+        SetmealDishes = SetmealDishes.stream().map((item) -> {
+            item.setSetmealId(setmealDto.getId());
+            return item;
+        }).collect(Collectors.toList());
+
+        setMealDishService.saveBatch(SetmealDishes);
+    }
+
 }

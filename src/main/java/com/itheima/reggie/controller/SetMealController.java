@@ -99,12 +99,69 @@ public class SetMealController {
     * */
     @CacheEvict(value = "setmealCache", allEntries = true)
     public R<String> delete(@RequestParam List<Long> ids){
-        log.info("ids: {}", ids);
+      /*  log.info("ids: {}", ids);
         setMealService.removeWithDish(ids);
-        return R.success("套餐删除成功。。。");
+        return R.success("套餐删除成功。。。");*/
+        int index=0;
+        for(Long id:ids) {
+            Setmeal setmeal = setMealService.getById(id);
+            if(setmeal.getStatus()!=1){
+                setMealService.removeById(id);
+            }else {
+                index++;
+            }
+        }
+        if (index>0&&index==ids.size()){
+            return R.error("选中的套餐均为启售状态，不能删除");
+        }else {
+            return R.success("删除成功");
+        }
     }
 
-    //TODO：2023年1月22日09:12:09  套餐管理：停售修改编辑 etc
+
+    //刪除套餐
+//    @DeleteMapping
+//    public R<String> delete(String[] ids){
+//        int index=0;
+//        for(String id:ids) {
+//            Setmeal setmeal = setMealService.getById(id);
+//            if(setmeal.getStatus()!=1){
+//                setMealService.removeById(id);
+//            }else {
+//                index++;
+//            }
+//        }
+//        if (index>0&&index==ids.length){
+//            return R.error("选中的套餐均为启售状态，不能删除");
+//        }else {
+//            return R.success("删除成功");
+//        }
+//    }
+
+    //停售启售修改状态
+    @PostMapping("/status/{status}")
+    public R<String> sale(@PathVariable int status,String[] ids){
+        for (String id:ids){
+            Setmeal setmeal = setMealService.getById(id);
+            setmeal.setStatus(status);
+            setMealService.updateById(setmeal);
+        }
+        return R.success("修改状态成功");
+    }
+    //根据Id查询套餐信息
+    @GetMapping("/{id}")
+    public R<SetmealDto> getById(@PathVariable Long id){
+        SetmealDto setmealDto=setMealService.getByIdWithDish(id);
+
+        return R.success(setmealDto);
+    }
+
+    //修改套餐
+    @PutMapping
+    public R<String> update(@RequestBody SetmealDto setmealDto){
+        setMealService.updateWithDish(setmealDto);
+        return R.success("修改套餐成功");
+    }
 
     /**
      * categoryId 菜品分类id（套餐分类）

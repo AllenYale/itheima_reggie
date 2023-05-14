@@ -116,12 +116,6 @@ public class DishController {
 
 
 
-    //TODO 2023年1月21日11:56:12菜品管理停售、起售（批量操作）
-    //注意：业务逻辑判断
-    //？？？(1)当我们对某个菜品A停售时，那么，包含这个菜品A的套餐A，套餐B，也要停售，这时需要关联dish，setmealDish，setmeal三张表
-    //？？？(2)当我们启售套餐A时，需要检查套餐A里面的菜品A，菜品B，菜品C，是否都是启售状态，否则启售套餐A失败，并且提示，启售套餐A失败，套餐A内有菜品停售。
-    //？？？菜品停售和删除还有套餐启售都要判断是否有菜品或者套餐停售或启售
-    //我感觉你们想的有点多余了，我是商家，这个单品我就想在套餐里卖，不卖单品不行吗
 
     /**
      * 修改菜品
@@ -195,6 +189,32 @@ public class DishController {
             //将db中查询出来的数据放入缓存，设置过期时间TTL 3mins
         redisTemplate.opsForValue().set(key, dishDTOS, 3, TimeUnit.MINUTES);
         return R.success(dishDTOS);
+    }
+
+    //菜品起售
+    @PostMapping("/status/{status}")
+    public R<String> updateDishStatus(@PathVariable int status, String[] ids){
+        //菜品起售优化-菜品停售对应的套餐要停售，套餐起售菜品也要起售。（不需要，商家dish不想单卖，只想放到套餐里卖）
+        log.info("修改状态status，{}", status);
+        for(String temp: ids){
+            Dish dish = dishService.getById(temp);
+            dish.setStatus(status);
+            dishService.updateById(dish);
+        }
+        return R.success("修改成功");
+    }
+
+    //删除菜品
+    @DeleteMapping
+    public R<String> delete(String[] ids){
+        //TODO：2023年5月14日10:13:27 删除菜品 逻辑优化（目前仅优化在售dish则不删除）
+        //1：在售则不删除。删除菜品前判断是否在售或者有相关的套餐在售
+        //2：没有在售dish和涉及dish的套餐则：删除菜品，删除菜品、口味表、套餐菜品表 。删除涉及表：dish & dish_flavor & setmeal_dish
+        for (String id:ids) {
+//            dishService.removeById(id);
+            dishService.checkDishStatusAndDel(id);
+        }
+        return R.success("删除成功");
     }
 
 

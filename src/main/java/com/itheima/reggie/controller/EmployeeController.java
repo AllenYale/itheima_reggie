@@ -43,7 +43,6 @@ public class EmployeeController {
         //2. username查询db
         LambdaQueryWrapper<Employee> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         //TODO: 2023年4月28日00:03:17 还是没理解方法引用，重新看一遍新特性。
-        // ？？？2023年1月17日16:21:35方法引用 还是没理解方法引用，重新看一遍新特性。
         lambdaQueryWrapper.eq(Employee::getUsername, employee.getUsername());
         //username 在数据库中，已经设计成unique index唯一索引
         Employee emp = employeeService.getOne(lambdaQueryWrapper);

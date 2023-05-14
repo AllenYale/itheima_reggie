@@ -2,12 +2,14 @@ package com.itheima.reggie.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.itheima.reggie.common.CustomException;
 import com.itheima.reggie.dto.DishDTO;
 import com.itheima.reggie.entity.Dish;
 import com.itheima.reggie.entity.DishFlavor;
 import com.itheima.reggie.mapper.DishMapper;
 import com.itheima.reggie.service.DishFlavorService;
 import com.itheima.reggie.service.DishService;
+import com.itheima.reggie.service.SetMealService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,9 +30,12 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     @Autowired
     private DishFlavorService dishFlavorService;
 
+    @Autowired
+    private SetMealService setMealService;
+
     @Override
     public void savaWithFlavor(DishDTO dishDTO) {
-        //新增菜品，同事插入菜品对应口味数据；操作dish、dishflavor两张表
+        //新增菜品，同时插入菜品对应口味数据；操作dish、dishflavor两张表
         //1.新增菜品，新增同时雪花算法生成了id
         save(dishDTO);
         Long id = dishDTO.getId();//获得自动生成的dishID
@@ -93,5 +98,18 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         }).collect(Collectors.toList());
 
         dishFlavorService.saveBatch(collect);
+    }
+
+    @Override
+    public void checkDishStatusAndDel(String id) {
+        //1：在售则不删除。删除菜品前判断是否在售或者有相关的套餐在售
+        long delId = Long.parseLong(id);
+        DishDTO dish = getByIdWithFlavor(delId);
+        //判断菜品是否启售
+        if(dish.getStatus()==1){
+            throw new CustomException("当前dish菜品中存在启售或有dish相关套餐启售，不允许删除dish");
+        }
+        //2：没有在售dish和涉及dish的套餐则：删除菜品，删除菜品、口味表、套餐菜品表 。删除涉及表：dish & dish_flavor & setmeal_dish
+        removeById(delId);
     }
 }
