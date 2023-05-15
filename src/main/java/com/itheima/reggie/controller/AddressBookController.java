@@ -45,9 +45,11 @@ public class AddressBookController {
         LambdaUpdateWrapper<AddressBook> wrapper = new LambdaUpdateWrapper<>();
         wrapper.eq(AddressBook::getUserId, BaseContext.getValue());
         wrapper.set(AddressBook::getIsDefault, 0);
+        //当前登入UserID所有地址簿都设置为0
         //SQL:update address_book set is_default = 0 where user_id = ?
         addressBookService.update(wrapper);
 
+        //把这条数据设置为用户id的默认地址数据
         addressBook.setIsDefault(1);
         //SQL:update address_book set is_default = 1 where id = ?
         addressBookService.updateById(addressBook);
