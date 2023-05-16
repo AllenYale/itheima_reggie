@@ -295,6 +295,7 @@
           methods:{
             //初始化数据
             initData(){
+              //移动端首页init：加载category数据和、cartList购物车数据
               Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
                 //获取分类数据
                 if(res[0].code === 1){
