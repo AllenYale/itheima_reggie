@@ -164,7 +164,7 @@ public class SetMealController {
     }
 
     /**
-     * categoryId 菜品分类id（套餐分类）
+     * categoryId  菜品分类id （套餐分类）
      * status 状态 0:停用 1:启用
      *
      * @param setmeal
