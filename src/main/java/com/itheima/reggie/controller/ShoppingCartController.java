@@ -66,7 +66,8 @@ public class ShoppingCartController {
     @GetMapping("/list")
     public R<List<ShoppingCart>> list(){
         log.info("查看购物车...");
-        //查看当前用户的shoppingcart
+
+        //查看当前用户的shoppingCart，每个user的购物车都是隔离的。shoppingCart表里的userID是不一样的
         Long value = BaseContext.getValue();
 
         LambdaQueryWrapper<ShoppingCart> queryWrapper = new LambdaQueryWrapper<>();
