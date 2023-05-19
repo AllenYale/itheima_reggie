@@ -71,8 +71,8 @@
                 //获取送达时间
                 getFinishTime(){
                     let now = new Date()
-                    let hour = now.getHours() +1
-                    let minute = now.getMinutes()
+                    let hour = now.getHours()
+                    let minute = now.getMinutes()+12;
                     if(hour.toString().length <2){
                         hour = '0' + hour
                     }

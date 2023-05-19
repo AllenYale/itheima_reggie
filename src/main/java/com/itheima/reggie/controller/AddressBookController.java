@@ -104,4 +104,28 @@ public class AddressBookController {
         //SQL:select * from address_book where user_id = ? order by update_time desc
         return R.success(addressBookService.list(queryWrapper));
     }
+
+    /**
+     * 收货地址删除
+     * @param id
+     * @return
+     */
+    @DeleteMapping()
+    public R<String> detele(@RequestParam("ids") Long id){
+        log.info("id={}",id);
+
+//        if (id == null){
+//            return R.error("请求异常");
+//        }  //感觉这个判断没太大必要，前端传的id必不能为空，为空的话地址就不会展示出来，更不会有这个删除按钮存在，简单说为空的话，连删除的机会都没有，所以判断没太大必要
+
+//        LambdaQueryWrapper<AddressBook> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(AddressBook::getId,id).eq(AddressBook::getUserId,BaseContext.getCurrentId());
+//        addressBookService.remove(queryWrapper);
+
+        //别人说直接使用这个removeById不太严谨，但我个人认为就是没登录状态进入该页面，是执行不了删除操作的，别说删除连查询，这个地址信息都不会展示，全被过滤器拦截了
+        //所以用上面的条件查询好像意义不大，当然你也可以放弃这个简单的removeById，用上面注释的条件删除
+        addressBookService.removeById(id);
+        return R.success("删除成功");
+    }
+
 }

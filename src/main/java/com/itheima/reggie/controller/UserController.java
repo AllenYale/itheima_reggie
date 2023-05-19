@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -100,5 +101,16 @@ public class UserController {
         }
         //不一致 返回验证码失败
         return R.error("code error..login fail");
+    }
+
+    /**
+     * 用户退出
+     * @param request
+     * @return
+     */
+    @PostMapping("/loginout")
+    public R<String> loginout(HttpServletRequest request){
+        request.getSession().removeAttribute("user");
+        return R.success("logout success");
     }
 }

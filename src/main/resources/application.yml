@@ -10,14 +10,17 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: root
-#      (Windows环境)
-      password: root
-#      (mac环境)
-#      password: yehanyu123
+#      (home Windows环境)
+#      password: root
+#      (company mac环境)
+      password: yehanyu123
 
 #      本机linux虚拟机redis
   redis:
-    host: 192.168.142.100
+#      (home Windows环境)
+#    host: 192.168.142.100
+#      (company mac环境)
+    host: 127.0.0.1
     password: 123456
     port: 6379
     database: 0
