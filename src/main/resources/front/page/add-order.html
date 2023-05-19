@@ -161,16 +161,39 @@
                     },
                     //获取送达时间
                     getFinishTime(){
-                        let now = new Date()
-                        let hour = now.getHours() +1
-                        let minute = now.getMinutes()
-                        if(hour.toString().length <2){
-                            hour = '0' + hour
+                        // let now = new Date()
+                        // let hour = now.getHours() +1
+                        // let minute = now.getMinutes()
+                        // if(hour.toString().length <2){
+                        //     hour = '0' + hour
+                        // }
+                        // if(minute.toString().length <2){
+                        //     minute = '0' + minute
+                        // }
+                        // this.finishTime = hour + ':' + minute
+
+                        let now = new Date();
+                        let hour = now.getHours();
+                        let minute = now.getMinutes() + 20;
+
+                        // 如果minute大于等于60，需要调整hour和minute值
+                        if (minute >= 60) {
+                            hour += 1;
+                            minute -= 60;
                         }
-                        if(minute.toString().length <2){
-                            minute = '0' + minute
+
+                        // 如果当前时间在23:40之后，需要调整hour和minute值为第二天的起始时间
+                        if(hour >= 24 || (hour === 23 && minute >= 40)) {
+                            now.setDate(now.getDate() + 1); // 拨到第二天
+                            hour = 0;
+                            minute = 20;
                         }
-                        this.finishTime = hour + ':' + minute
+
+                        // 如果hour或minute小于两位数，需要在前面添加一个零
+                        hour = hour.toString().padStart(2, '0');
+                        minute = minute.toString().padStart(2, '0');
+
+                        this.finishTime = `${hour}:${minute}`;
                     },
                     toAddressPage(){
                         window.requestAnimationFrame(()=>{
