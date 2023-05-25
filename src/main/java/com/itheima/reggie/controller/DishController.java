@@ -128,10 +128,10 @@ public class DishController {
         //update 菜品，操作dish、dishflavor两张表
         dishService.updateWithFlavor(dishDTO);
 
-        //优化：清理所有菜品缓存数据
+        //优化：清理所有菜品缓存数据，redis key支持通配符
 //        Set keys = redisTemplate.keys("dish_*");
 //        redisTemplate.delete(keys);
-        //清理某个分类菜品缓存数据
+        //优化2：清理某个分类菜品缓存数据
         redisTemplate.delete("dish_"+dishDTO.getCategoryId()+"_"+dishDTO.getStatus());
 
         return R.success("操作成功！！！！！！");

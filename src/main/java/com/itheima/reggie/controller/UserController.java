@@ -78,7 +78,7 @@ public class UserController {
 
 //        String codeByPhone =  httpSession.getAttribute(phone);
         //优化：从redis中取生成的验证码code
-        String codeByPhone = (String) redisTemplate.opsForValue().get(phone);
+        String codeByPhone = redisTemplate.opsForValue().get(phone);
 
         log.info("login phone code codeByphone:{}, {}, {}",phone, code, codeByPhone);
         if(code.equals(codeByPhone)){
