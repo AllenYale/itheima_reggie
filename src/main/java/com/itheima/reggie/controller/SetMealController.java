@@ -172,7 +172,7 @@ public class SetMealController {
      */
     @GetMapping("/list")
     /*优化：
-    查询时如果缓存中有数据则用缓存，没有数据就加入缓存；#setmeal SPEL表达式可以获取到形参*/
+     查询时如果缓存中有数据则用缓存，没有数据就加入缓存；#setmeal SPEL表达式可以获取到形参*/
     @Cacheable(value = "setmealCache", key = "#setmeal.categoryId + '_' + #setmeal.status")
     public R<List<Setmeal>> list(/*String categoryId, Integer status*/Setmeal setmeal){
         //查询套餐
