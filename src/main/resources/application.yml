@@ -13,14 +13,18 @@ spring:
 #      (home Windows环境)
 #      password: root
 #      (company mac环境)
-      password: yehanyu123
+#      password: yehanyu123
+#      (home LEGION环境)
+      password: 123456
 
 #      本机linux虚拟机redis
   redis:
 #      (home Windows环境)
 #    host: 192.168.142.100
+#      (home LEGION)
+    host: 192.168.10.100
 #      (company mac环境)
-    host: 127.0.0.1
+#    host: 127.0.0.1
     password: 123456
     port: 6379
     database: 0
@@ -43,4 +47,6 @@ mybatis-plus:
 reggie:
   file:
 # basepath yml中配置文件上传basePath，最后需要加上\斜杠。因为代码中会在后面拼接文件名使用。
-    basePath: F:\workspace_idea\itheima_reggie\upload_file_Dir\
+#    basePath: F:\workspace_idea\itheima_reggie\upload_file_Dir\
+#      (home LEGION 环境)
+    basePath: E:\doc\learning\reggie\img
