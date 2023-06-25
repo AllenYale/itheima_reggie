@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,user-scalable=no,minimal-ui">
 <!--    <title>工大O2O餐厅</title>-->
     <title>工大O2O餐厅</title>
-    <link rel="icon" href="images/favico.ico">
+    <link rel="icon" href="images/favicon.ico">
     <!--不同屏幕尺寸根字体设置-->
     <script src="./js/base.js"></script>
     <!--element-ui的样式-->
@@ -26,8 +26,8 @@
       </div>
       <div class="divTitle">
         <div class="divStatic">
-<!--        TBD  <img src="./images/logo.png"  class="logo"/>-->
-          <img src="/backend/images/login/02e0d789-d921-49c1-ba7b-d9ab57a41a746.jpg.jpg"  class="logo"/>
+<!--          <img src="./images/logo.png"  class="logo"/>-->
+          <img src="/backend/images/login/index.jpg"  class="logo"/>
           <div class="divDesc">
 <!--          TBD  <div class="divName">工大O2O餐厅餐厅</div>-->
               <div><span>工大O2O餐厅</span></div>
@@ -278,7 +278,8 @@
               this.cartData.forEach(item=>{
                 price += (item.number * item.amount)
               })
-              return price
+              // return price
+                return price.toFixed(2); // 使用 toFixed() 方法将价格保留两位小数并返回
             }
           },
           created(){

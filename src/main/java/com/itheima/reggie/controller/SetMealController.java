@@ -3,10 +3,14 @@ package com.itheima.reggie.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.reggie.common.R;
+import com.itheima.reggie.dto.DishDTO;
 import com.itheima.reggie.dto.SetmealDto;
 import com.itheima.reggie.entity.Category;
+import com.itheima.reggie.entity.Dish;
 import com.itheima.reggie.entity.Setmeal;
+import com.itheima.reggie.entity.SetmealDish;
 import com.itheima.reggie.service.CategoryService;
+import com.itheima.reggie.service.DishService;
 import com.itheima.reggie.service.SetMealDishService;
 import com.itheima.reggie.service.SetMealService;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +42,9 @@ public class SetMealController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private DishService dishService;
 
     @PostMapping
     /*
@@ -137,6 +144,33 @@ public class SetMealController {
 //            return R.success("删除成功");
 //        }
 //    }
+
+    /**
+     * 点击查看套餐中的菜品
+     */
+    @GetMapping("/dish/{id}")
+    public R<List<DishDTO>> dish(@PathVariable("id") Long SetmealId) {
+        LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SetmealDish::getSetmealId, SetmealId);
+        //获取套餐里面的所有菜品  这个就是SetmealDish表里面的数据
+        List<SetmealDish> list = setMealDishService.list(queryWrapper);
+
+        List<DishDTO> dishDtos = list.stream().map((setmealDish) -> {
+            DishDTO dishDto = new DishDTO();
+            //将套餐菜品关系表中的数据拷贝到dishDto中
+            BeanUtils.copyProperties(setmealDish, dishDto);
+            //这里是为了把套餐中的菜品的基本信息填充到dto中，比如菜品描述，菜品图片等菜品的基本信息
+            Long dishId = setmealDish.getDishId();
+            Dish dish = dishService.getById(dishId);
+            //将菜品信息拷贝到dishDto中
+            BeanUtils.copyProperties(dish, dishDto);
+
+            return dishDto;
+        }).collect(Collectors.toList());
+
+        return R.success(dishDtos);
+    }
+
 
     //停售启售修改状态
     @PostMapping("/status/{status}")

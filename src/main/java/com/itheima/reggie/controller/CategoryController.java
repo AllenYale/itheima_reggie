@@ -23,7 +23,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * 新增分类/菜单信息，通过前端传过来type辨别是新增分类还是菜单
+         * 新增分类/菜单信息，通过前端传过来type辨别是新增分类还是菜单
      * @param category
      * @return
      */

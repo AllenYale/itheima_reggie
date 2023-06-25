@@ -128,4 +128,12 @@ public class AddressBookController {
         return R.success("删除成功");
     }
 
+    @PutMapping
+    public R<String> edit(@RequestBody AddressBook addressBook){
+//        Long id = addressBook.getId();
+        log.info("addressBook={}",addressBook);
+        addressBookService.updateById(addressBook);
+        return R.success("修改成功");
+    }
+
 }

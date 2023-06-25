@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 /**
  * 菜品管理
+ *
  * @ Author: Hanyuye
  * @ Date: 2023年1月18日21:30:17
  */
@@ -45,11 +46,12 @@ public class DishController {
 
     /**
      * 新增菜品
+     *
      * @param dishDTO
      * @return
      */
     @PostMapping
-    public R<String> save(@RequestBody DishDTO dishDTO){
+    public R<String> save(@RequestBody DishDTO dishDTO) {
         log.info("新增菜品, dishDTO：{},", dishDTO.toString());
         //新增菜品，同事插入菜品对应口味数据；操作dish、dishflavor两张表
         dishService.savaWithFlavor(dishDTO);
@@ -57,18 +59,15 @@ public class DishController {
     }
 
     @GetMapping("/page")
-    public R<Page> page(int page, int pageSize, String name){
+    public R<Page> page(int page, int pageSize, String name) {
         Page<Dish> pageInfo = new Page<>(page, pageSize);
 
         LambdaQueryWrapper<Dish> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-       lambdaQueryWrapper.like(name != null, Dish::getName, name);
-       //类名；；方法引用，表示某个字段
-       lambdaQueryWrapper.orderByDesc(Dish::getUpdateTime);
+        lambdaQueryWrapper.like(name != null, Dish::getName, name);
+        lambdaQueryWrapper.orderByDesc(Dish::getUpdateTime);
 
-       dishService.page(pageInfo, lambdaQueryWrapper);
+        dishService.page(pageInfo, lambdaQueryWrapper);
 
-        //Dish没有cateName属性(只有id)，因此封装DishDTO返回前端。
-        // 拷贝 相关分页信息，pageInfo到dishDTOpageInfo
         Page<DishDTO> dishDTOPageInfo = new Page<>();
         //对象拷贝工具类spring-beans
         BeanUtils.copyProperties(pageInfo, dishDTOPageInfo, "records");
@@ -104,26 +103,24 @@ public class DishController {
         dishDTOPageInfo.setRecords(dishDTOList);*/
 
 
-
         return R.success(dishDTOPageInfo);
     }
 
     @GetMapping("/{id}")
-    public R<DishDTO> get(@PathVariable Long id){
+    public R<DishDTO> get(@PathVariable Long id) {
         DishDTO dishDTO = dishService.getByIdWithFlavor(id);
         return R.success(dishDTO);
     }
 
 
-
-
     /**
      * 修改菜品
+     *
      * @param dishDTO
      * @return
      */
     @PutMapping
-    public R<String> update(@RequestBody DishDTO dishDTO){
+    public R<String> update(@RequestBody DishDTO dishDTO) {
         log.info("修改菜品, dishDTO：{},", dishDTO.toString());
         //update 菜品，操作dish、dishflavor两张表
         dishService.updateWithFlavor(dishDTO);
@@ -132,44 +129,46 @@ public class DishController {
 //        Set keys = redisTemplate.keys("dish_*");
 //        redisTemplate.delete(keys);
         //优化2：清理某个分类菜品缓存数据
-        redisTemplate.delete("dish_"+dishDTO.getCategoryId()+"_"+dishDTO.getStatus());
+        redisTemplate.delete("dish_" + dishDTO.getCategoryId() + "_" + dishDTO.getStatus());
 
         return R.success("操作成功！！！！！！");
     }
 
     /**
      * 查询dishList，支持条件查询
+     *
      * @param dish
      * @return
      */
     @GetMapping("/list")
-    public R<List<DishDTO>> list(Dish dish){
+    public R<List<DishDTO>> list(Dish dish) {
         /*
-        * 优化：
-        * list数据先查询redis缓存，如果没有再查询db，将db中查询出来的数据放入缓存
-        * 、（dml操作时要清理或更新缓存中数据，否则数据库和缓存中数据不一致）
-        * */
+         * 优化：
+         * list数据先查询redis缓存，如果没有再查询db，将db中查询出来的数据放入缓存
+         * 、（dml操作时要清理或更新缓存中数据，否则数据库和缓存中数据不一致）
+         * */
         List<DishDTO> dishDTOS = null;
         //设置key
-        String key = "dish_"+dish.getCategoryId()+"_"+dish.getStatus();
+        String key = "dish_" + dish.getCategoryId() + "_" + dish.getStatus();
         //1：查询redis
         dishDTOS = (List<DishDTO>) redisTemplate.opsForValue().get(key);
-            //缓存中有数据直接返回
-        if(dishDTOS!=null){
-            return R.success(dishDTOS);
-        }
+        //缓存中有数据直接返回
+//        修改，不从缓存拿数据，防止删除或者停售后继续从缓存拿数据2023年6月23日
+//        if(dishDTOS!=null){
+//            return R.success(dishDTOS);
+//        }
 
         //2: 没有数据，将db中查询出来的数据放入缓存
 
         LambdaQueryWrapper<Dish> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(dish.getCategoryId()!=null, Dish::getCategoryId, dish.getCategoryId());
+        lambdaQueryWrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
         lambdaQueryWrapper.eq(Dish::getStatus, 1);
         lambdaQueryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
         List<Dish> list = dishService.list(lambdaQueryWrapper);
 
-    // 修改list控制器返回数据类型，前端需要拿到值口味数据 -> 判断显示按钮+数据展示
+        // 修改list控制器返回数据类型，前端需要拿到值口味数据 -> 判断显示按钮+数据展示
         //stream流操作遍历流中每个item 装配DTO返回前端
-            dishDTOS = list.stream().map(item -> {
+        dishDTOS = list.stream().map(item -> {
             DishDTO dishDTO = new DishDTO();
             BeanUtils.copyProperties(item, dishDTO);
             Long categoryId = item.getCategoryId();
@@ -186,17 +185,17 @@ public class DishController {
             return dishDTO;
 
         }).collect(Collectors.toList());
-            //将db中查询出来的数据放入缓存，设置过期时间TTL 3mins
+        //将db中查询出来的数据放入缓存，设置过期时间TTL 3mins
         redisTemplate.opsForValue().set(key, dishDTOS, 3, TimeUnit.MINUTES);
         return R.success(dishDTOS);
     }
 
     //菜品起售
     @PostMapping("/status/{status}")
-    public R<String> updateDishStatus(@PathVariable int status, String[] ids){
+    public R<String> updateDishStatus(@PathVariable int status, String[] ids) {
         //菜品起售优化-菜品停售对应的套餐要停售，套餐起售菜品也要起售。（不需要，商家dish不想单卖，只想放到套餐里卖）
         log.info("修改状态status，{}", status);
-        for(String temp: ids){
+        for (String temp : ids) {
             Dish dish = dishService.getById(temp);
             dish.setStatus(status);
             dishService.updateById(dish);
@@ -206,11 +205,11 @@ public class DishController {
 
     //删除菜品
     @DeleteMapping
-    public R<String> delete(String[] ids){
+    public R<String> delete(String[] ids) {
         //TODO：2023年5月14日10:13:27 删除菜品 逻辑优化（目前仅优化在售dish则不删除）
         //1：在售则不删除。删除菜品前判断是否在售或者有相关的套餐在售
         //2：没有在售dish和涉及dish的套餐则：删除菜品，删除菜品、口味表、套餐菜品表 。删除涉及表：dish & dish_flavor & setmeal_dish
-        for (String id:ids) {
+        for (String id : ids) {
 //            dishService.removeById(id);
             dishService.checkDishStatusAndDel(id);
         }
